@@ -67,20 +67,20 @@
           <div>
             <label for="monto">Monto ingresado</label>
             <input id="monto" type="text" inputmode="numeric" placeholder="Ej: 1.204.980" autocomplete="off" />
-            <div id="err" class="error">Ingresa un monto válido (solo números).</div>
+            <div id="err" class="error" role="alert" aria-live="polite">Ingresa un monto válido (solo números).</div>
           </div>
           <div>
             <label for="tasa">Tasa IVA (%)</label>
-            <input id="tasa" type="number" step="0.01" min="0" value="19" />
+            <input id="tasa" type="number" step="0.01" min="0" max="100" value="19" inputmode="decimal" />
             <p class="muted">Puedes ajustar la tasa si lo necesitas.</p>
           </div>
         </div>
 
         <div class="btns">
-          <button class="primary" id="btn-calcular">Calcular</button>
-          <button class="ghost" id="btn-limpiar" title="Limpiar">Limpiar</button>
-          <button class="ghost" id="btn-copiar" title="Copiar desglose">Copiar</button>
-          <button class="ghost" id="btn-imprimir" title="Imprimir / Guardar PDF">Imprimir / PDF</button>
+          <button class="primary" id="btn-calcular" type="button">Calcular</button>
+          <button class="ghost" id="btn-limpiar" title="Limpiar" type="button">Limpiar</button>
+          <button class="ghost" id="btn-copiar" title="Copiar desglose" type="button">Copiar</button>
+          <button class="ghost" id="btn-imprimir" title="Imprimir / Guardar PDF" type="button">Imprimir / PDF</button>
         </div>
       </section>
 
@@ -135,6 +135,7 @@
     };
 
     function calcular(){
+      err.textContent = 'Ingresa un monto válido (solo números).';
       err.style.display = 'none';
       const val = parseMonto(monto.value);
       const t = Number(tasa.value);
@@ -142,8 +143,8 @@
         err.style.display = 'block';
         return;
       }
-      if(!isFinite(t) || t < 0){
-        err.textContent = 'Tasa inválida.';
+      if(!isFinite(t) || t < 0 || t > 100){
+        err.textContent = 'Tasa inválida. Debe estar entre 0 y 100.';
         err.style.display = 'block';
         return;
       }
@@ -197,6 +198,9 @@
     document.getElementById('btn-limpiar').addEventListener('click', limpiar);
     document.getElementById('btn-copiar').addEventListener('click', copiar);
     document.getElementById('btn-imprimir').addEventListener('click', ()=> window.print());
+
+    document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', calcular));
+    tasa.addEventListener('change', calcular);
 
     // Calcular al presionar Enter
     monto.addEventListener('keydown', e=>{ if(e.key==='Enter') calcular(); });
