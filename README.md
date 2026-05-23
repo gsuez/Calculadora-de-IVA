@@ -11,7 +11,7 @@ Puedes calcular desde:
 - Monto neto
 - Monto total con IVA incluido
 
-La calculadora permite ajustar la tasa de IVA, copiar el desglose e imprimir o guardar el resultado como PDF.
+La calculadora actualiza el resultado automaticamente al escribir, permite ajustar la tasa de IVA, guardar un historial de calculos de la sesion, copiar el desglose, cambiar entre modo claro y oscuro e imprimir o guardar el resultado como PDF.
 
 ## Archivos
 

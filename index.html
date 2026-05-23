@@ -3,213 +3,696 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de IVA (Chile 19%)</title>
+  <title>Calculadora de IVA Chile</title>
   <style>
-    :root{
-      --bg:#0f172a; /* slate-900 */
-      --panel:#111827; /* gray-900 */
-      --muted:#94a3b8; /* slate-400 */
-      --text:#e5e7eb; /* gray-200 */
-      --accent:#22c55e; /* green-500 */
-      --accent-2:#60a5fa; /* blue-400 */
-      --danger:#ef4444;
-      --ring: rgba(96,165,250,.4);
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-soft: #eef3f9;
+      --border: #d8e0ea;
+      --text: #172033;
+      --muted: #667085;
+      --accent: #0f766e;
+      --accent-strong: #0b5f59;
+      --accent-soft: #dff5f2;
+      --warning: #b42318;
+      --shadow: 0 18px 50px rgba(23, 32, 51, 0.12);
+      --ring: rgba(15, 118, 110, 0.18);
     }
-    *{box-sizing:border-box}
-    body{margin:0;background:linear-gradient(120deg,#0b1224,#0f172a 60%,#0b1224);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;min-height:100svh;display:grid;place-items:center;padding:24px}
-    .card{width:min(900px,95vw);background:rgba(17,24,39,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
-    h1{font-size:clamp(20px,3vw,28px);margin:0 0 8px}
-    p.sub{margin:0 0 18px;color:var(--muted)}
-    .grid{display:grid;gap:16px;grid-template-columns:1fr}
-    @media (min-width:720px){.grid{grid-template-columns:1.2fr .8fr}}
-    .panel{background:#0b1222;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-    input[type="text"], input[type="number"]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(148,163,184,.25);background:#0a1220;color:var(--text);outline:none;transition:border .2s, box-shadow .2s}
-    input[readonly]{opacity:.9}
-    input:focus{border-color:var(--accent-2);box-shadow:0 0 0 6px var(--ring)}
-    .row{display:grid;gap:10px;grid-template-columns:1fr 1fr}
-    .row-3{display:grid;gap:10px;grid-template-columns:1fr 1fr 1fr}
-    .muted{color:var(--muted);font-size:12px}
-    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{padding:12px 14px;border-radius:12px;border:1px solid rgba(148,163,184,.25);background:#0b1528;color:var(--text);cursor:pointer}
-    button.primary{background:linear-gradient(135deg,#2563eb,#22c55e);border:none}
-    button.ghost{background:transparent}
-    .results{display:grid;gap:10px}
-    .kpi{background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px}
-    .kpi h3{margin:0;font-size:12px;color:var(--muted);font-weight:600}
-    .kpi p{margin:6px 0 0;font-weight:800;font-size:22px}
-    .segmented{display:flex;border-radius:12px;overflow:hidden;border:1px solid rgba(148,163,184,.25)}
-    .segmented input{display:none}
-    .segmented label{flex:1;text-align:center;padding:10px 12px;cursor:pointer;background:#0b1528;color:var(--text);user-select:none;border-right:1px solid rgba(148,163,184,.18)}
-    .segmented label:last-child{border-right:none}
-    .segmented input:checked+label{background:linear-gradient(180deg,#1f2937,#0b1528);color:#fff}
-    .error{color:var(--danger);font-size:13px;display:none;margin-top:4px}
-    .foot{margin-top:12px;color:var(--muted);font-size:12px}
-    .small{font-size:11px;color:var(--muted)}
+
+    [data-theme="dark"] {
+      --bg: #111827;
+      --surface: #172033;
+      --surface-soft: #202b3d;
+      --border: #344054;
+      --text: #f8fafc;
+      --muted: #b8c2d2;
+      --accent: #5eead4;
+      --accent-strong: #99f6e4;
+      --accent-soft: #123b3a;
+      --warning: #fca5a5;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+      --ring: rgba(94, 234, 212, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      background:
+        radial-gradient(circle at top left, rgba(15, 118, 110, 0.14), transparent 34rem),
+        linear-gradient(180deg, var(--bg), var(--surface-soft));
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 28px;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      min-height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .app {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 6px;
+      color: var(--accent-strong);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      max-width: 680px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.55;
+    }
+
+    .theme-toggle {
+      width: 44px;
+      flex: 0 0 44px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    [data-theme="dark"] .panel {
+      background: rgba(23, 32, 51, 0.9);
+    }
+
+    .panel-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 6px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      min-height: 44px;
+      display: grid;
+      place-items: center;
+      padding: 8px 10px;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .segmented input:checked + label {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 160px;
+      gap: 14px;
+    }
+
+    label.field-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 5px var(--ring);
+    }
+
+    .hint,
+    .status {
+      min-height: 19px;
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status.error {
+      color: var(--warning);
+      font-weight: 700;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 800;
+      padding: 0 16px;
+    }
+
+    [data-theme="dark"] .primary {
+      color: #0f172a;
+    }
+
+    .secondary {
+      padding: 0 14px;
+      font-weight: 750;
+    }
+
+    .results {
+      display: grid;
+      gap: 12px;
+    }
+
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-soft);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 5px;
+      font-size: clamp(20px, 3vw, 28px);
+      font-weight: 900;
+      text-align: right;
+      overflow-wrap: anywhere;
+    }
+
+    .total {
+      background: var(--accent-soft);
+      border-color: rgba(15, 118, 110, 0.28);
+    }
+
+    .formula {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .history {
+      margin-top: 18px;
+    }
+
+    .history-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .history-empty {
+      padding: 18px;
+      border: 1px dashed var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .history-item {
+      display: grid;
+      gap: 5px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .history-item header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .history-item p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    @media (max-width: 820px) {
+      body {
+        padding: 18px;
+      }
+
+      .topbar,
+      .layout,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        display: grid;
+      }
+
+      .theme-toggle {
+        justify-self: end;
+        order: -1;
+      }
+    }
+
+    @media print {
+      body {
+        background: #ffffff;
+        padding: 0;
+      }
+
+      .theme-toggle,
+      .actions,
+      .history {
+        display: none;
+      }
+
+      .panel {
+        box-shadow: none;
+      }
+    }
   </style>
 </head>
-<body>
-  <div class="card">
-    <h1>Calculadora de IVA</h1>
-    <p class="sub">Desglose de <strong>Neto</strong>, <strong>IVA</strong> y <strong>Total</strong>. Tasa por defecto: 19% (Chile).</p>
+<body data-theme="light">
+  <main class="app">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">IVA Chile 19%</p>
+        <h1>Calculadora de IVA</h1>
+        <p class="lead">Ingresa un monto neto o un total con IVA incluido. La calculadora actualiza el desglose al instante y guarda tus ultimos calculos en esta sesion.</p>
+      </div>
+      <button class="theme-toggle" id="btn-tema" type="button" title="Cambiar tema" aria-label="Cambiar tema">☾</button>
+    </div>
 
-    <div class="grid">
-      <!-- Inputs -->
-      <section class="panel">
-        <div class="segmented" role="tablist" aria-label="Tipo de valor ingresado">
+    <div class="layout">
+      <section class="panel" aria-labelledby="config-title">
+        <div class="panel-title">
+          <h2 id="config-title">Datos del calculo</h2>
+          <span class="badge">Automatico</span>
+        </div>
+
+        <div class="segmented" role="radiogroup" aria-label="Tipo de monto ingresado">
           <input type="radio" name="tipo" id="tipo-neto" value="neto" checked>
-          <label for="tipo-neto">Ingreso NETO</label>
+          <label for="tipo-neto">Desde neto</label>
           <input type="radio" name="tipo" id="tipo-total" value="total">
-          <label for="tipo-total">Ingreso TOTAL con IVA</label>
+          <label for="tipo-total">Desde total</label>
         </div>
 
-        <div class="row" style="margin-top:14px">
+        <div class="form-grid">
           <div>
-            <label for="monto">Monto ingresado</label>
+            <label class="field-label" for="monto">Monto ingresado</label>
             <input id="monto" type="text" inputmode="numeric" placeholder="Ej: 1.204.980" autocomplete="off" />
-            <div id="err" class="error" role="alert" aria-live="polite">Ingresa un monto válido (solo números).</div>
+            <p id="estado" class="status" aria-live="polite">Esperando un monto para calcular.</p>
           </div>
           <div>
-            <label for="tasa">Tasa IVA (%)</label>
+            <label class="field-label" for="tasa">Tasa IVA (%)</label>
             <input id="tasa" type="number" step="0.01" min="0" max="100" value="19" inputmode="decimal" />
-            <p class="muted">Puedes ajustar la tasa si lo necesitas.</p>
+            <p class="hint">Puedes modificarla.</p>
           </div>
         </div>
 
-        <div class="btns">
-          <button class="primary" id="btn-calcular" type="button">Calcular</button>
-          <button class="ghost" id="btn-limpiar" title="Limpiar" type="button">Limpiar</button>
-          <button class="ghost" id="btn-copiar" title="Copiar desglose" type="button">Copiar</button>
-          <button class="ghost" id="btn-imprimir" title="Imprimir / Guardar PDF" type="button">Imprimir / PDF</button>
+        <div class="actions">
+          <button class="primary" id="btn-guardar" type="button">Guardar calculo</button>
+          <button class="secondary" id="btn-copiar" type="button">Copiar desglose</button>
+          <button class="secondary" id="btn-limpiar" type="button">Limpiar</button>
+          <button class="secondary" id="btn-imprimir" type="button">Imprimir / PDF</button>
         </div>
       </section>
 
-      <!-- Resultados -->
-      <section class="panel">
+      <section class="panel" aria-labelledby="result-title">
+        <div class="panel-title">
+          <h2 id="result-title">Resultado</h2>
+          <span class="badge" id="tipo-resumen">Desde neto</span>
+        </div>
+
         <div class="results">
-          <div class="kpi">
-            <h3>Neto</h3>
-            <p id="out-neto">—</p>
+          <div class="metric">
+            <strong>Neto</strong>
+            <span id="out-neto">$0</span>
           </div>
-          <div class="kpi">
-            <h3>IVA</h3>
-            <p id="out-iva">—</p>
+          <div class="metric">
+            <strong>IVA</strong>
+            <span id="out-iva">$0</span>
           </div>
-          <div class="kpi">
-            <h3>Total</h3>
-            <p id="out-total">—</p>
+          <div class="metric total">
+            <strong>Total</strong>
+            <span id="out-total">$0</span>
           </div>
         </div>
-        <p class="foot">Redondeo al peso más cercano.</p>
+
+        <p class="formula" id="formula">Redondeo al peso mas cercano. Formula: Total = Neto + IVA.</p>
       </section>
     </div>
 
-    <details style="margin-top:12px">
-      <summary>Ver fórmula</summary>
-      <p class="small">Si ingresas <strong>Neto</strong>: IVA = Neto × (tasa/100), Total = Neto + IVA. <br>Si ingresas <strong>Total</strong>: Neto = Total ÷ (1 + tasa/100), IVA = Total − Neto.</p>
-    </details>
-  </div>
+    <section class="panel history" aria-labelledby="history-title">
+      <div class="history-head">
+        <h2 id="history-title">Historial</h2>
+        <button class="secondary" id="btn-borrar-historial" type="button">Borrar historial</button>
+      </div>
+      <div class="history-list" id="historial">
+        <div class="history-empty">Los calculos guardados apareceran aqui.</div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    // Utilidad: formatear CLP sin decimales
-    const fmtCLP = n => new Intl.NumberFormat('es-CL',{style:'currency',currency:'CLP',maximumFractionDigits:0}).format(Math.round(n));
+    const app = document.body;
+    const monto = document.getElementById('monto');
+    const tasa = document.getElementById('tasa');
+    const estado = document.getElementById('estado');
+    const outNeto = document.getElementById('out-neto');
+    const outIva = document.getElementById('out-iva');
+    const outTotal = document.getElementById('out-total');
+    const formula = document.getElementById('formula');
+    const tipoResumen = document.getElementById('tipo-resumen');
+    const historial = document.getElementById('historial');
+    const btnTema = document.getElementById('btn-tema');
+    const tipoRadios = [...document.querySelectorAll('input[name="tipo"]')];
+    const maxHistorial = 6;
+    let ultimoResultado = null;
+    let calculos = [];
 
-    // Parsear texto a número (acepta puntos/espacios)
-    function parseMonto(txt){
-      if(!txt) return NaN;
-      const clean = txt.replace(/[^\d,\.]/g,'').replace(/\./g,'').replace(/,/g,'.');
-      return Number(clean);
+    const fmtCLP = new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0
+    });
+
+    function formato(n) {
+      return fmtCLP.format(Math.round(n));
     }
 
-    const el = id => document.getElementById(id);
-    const monto = el('monto');
-    const tasa = el('tasa');
-    const outNeto = el('out-neto');
-    const outIva = el('out-iva');
-    const outTotal = el('out-total');
-    const err = el('err');
+    function parseMonto(valor) {
+      if (!valor) return NaN;
+      const limpio = valor.replace(/[^\d,.]/g, '').replace(/\./g, '').replace(/,/g, '.');
+      return Number(limpio);
+    }
 
-    const tipoRadios = {
-      neto: document.getElementById('tipo-neto'),
-      total: document.getElementById('tipo-total')
-    };
+    function tipoActual() {
+      return tipoRadios.find(radio => radio.checked).value;
+    }
 
-    function calcular(){
-      err.textContent = 'Ingresa un monto válido (solo números).';
-      err.style.display = 'none';
-      const val = parseMonto(monto.value);
-      const t = Number(tasa.value);
-      if(!isFinite(val) || val <= 0){
-        err.style.display = 'block';
+    function mostrarCero(mensaje) {
+      ultimoResultado = null;
+      outNeto.textContent = '$0';
+      outIva.textContent = '$0';
+      outTotal.textContent = '$0';
+      estado.textContent = mensaje;
+      estado.classList.remove('error');
+    }
+
+    function calcular() {
+      const valor = parseMonto(monto.value);
+      const porcentaje = Number(tasa.value);
+      const tipo = tipoActual();
+      tipoResumen.textContent = tipo === 'neto' ? 'Desde neto' : 'Desde total';
+      formula.textContent = tipo === 'neto'
+        ? 'Redondeo al peso mas cercano. Formula: Total = Neto + IVA.'
+        : 'Redondeo al peso mas cercano. Formula: Neto = Total dividido por 1 + tasa.';
+
+      if (!monto.value.trim()) {
+        mostrarCero('Esperando un monto para calcular.');
         return;
       }
-      if(!isFinite(t) || t < 0 || t > 100){
-        err.textContent = 'Tasa inválida. Debe estar entre 0 y 100.';
-        err.style.display = 'block';
+
+      if (!Number.isFinite(valor) || valor <= 0) {
+        ultimoResultado = null;
+        estado.textContent = 'Ingresa un monto valido mayor que cero.';
+        estado.classList.add('error');
         return;
       }
 
-      const r = t/100;
-      let neto, iva, total;
+      if (!Number.isFinite(porcentaje) || porcentaje < 0 || porcentaje > 100) {
+        ultimoResultado = null;
+        estado.textContent = 'La tasa debe estar entre 0 y 100.';
+        estado.classList.add('error');
+        return;
+      }
 
-      if(tipoRadios.neto.checked){
-        neto = val;
-        iva = neto * r;
+      const tasaDecimal = porcentaje / 100;
+      let neto;
+      let iva;
+      let total;
+
+      if (tipo === 'neto') {
+        neto = valor;
+        iva = neto * tasaDecimal;
         total = neto + iva;
       } else {
-        total = val;
-        neto = total / (1 + r);
+        total = valor;
+        neto = total / (1 + tasaDecimal);
         iva = total - neto;
       }
 
-      // Redondeo al peso
-      neto = Math.round(neto);
-      iva = Math.round(iva);
-      total = Math.round(total);
+      ultimoResultado = {
+        tipo,
+        tasa: porcentaje,
+        neto: Math.round(neto),
+        iva: Math.round(iva),
+        total: Math.round(total)
+      };
 
-      outNeto.textContent = fmtCLP(neto);
-      outIva.textContent = fmtCLP(iva);
-      outTotal.textContent = fmtCLP(total);
+      outNeto.textContent = formato(ultimoResultado.neto);
+      outIva.textContent = formato(ultimoResultado.iva);
+      outTotal.textContent = formato(ultimoResultado.total);
+      estado.textContent = 'Calculo actualizado automaticamente.';
+      estado.classList.remove('error');
     }
 
-    function limpiar(){
+    function limpiar() {
       monto.value = '';
-      tasa.value = 19;
-      outNeto.textContent = '—';
-      outIva.textContent = '—';
-      outTotal.textContent = '—';
-      err.style.display = 'none';
+      tasa.value = '19';
+      tipoRadios[0].checked = true;
+      mostrarCero('Esperando un monto para calcular.');
+      tipoResumen.textContent = 'Desde neto';
+      formula.textContent = 'Redondeo al peso mas cercano. Formula: Total = Neto + IVA.';
       monto.focus();
     }
 
-    function copiar(){
-      const txt = `Neto: ${outNeto.textContent}\nIVA: ${outIva.textContent}\nTotal: ${outTotal.textContent}`;
-      navigator.clipboard.writeText(txt).then(()=>{
-        const b = document.getElementById('btn-copiar');
-        const old = b.textContent;
-        b.textContent = '¡Copiado!';
-        setTimeout(()=> b.textContent = old, 1200);
-      }).catch(()=>{
-        alert('No se pudo copiar al portapapeles.');
+    function textoResultado(resultado = ultimoResultado) {
+      if (!resultado) return '';
+      return [
+        `Origen: ${resultado.tipo === 'neto' ? 'Monto neto' : 'Total con IVA'}`,
+        `Tasa IVA: ${resultado.tasa}%`,
+        `Neto: ${formato(resultado.neto)}`,
+        `IVA: ${formato(resultado.iva)}`,
+        `Total: ${formato(resultado.total)}`
+      ].join('\n');
+    }
+
+    function copiar() {
+      if (!ultimoResultado) {
+        estado.textContent = 'Primero ingresa un monto valido.';
+        estado.classList.add('error');
+        return;
+      }
+
+      navigator.clipboard.writeText(textoResultado()).then(() => {
+        const boton = document.getElementById('btn-copiar');
+        const textoOriginal = boton.textContent;
+        boton.textContent = 'Copiado';
+        setTimeout(() => {
+          boton.textContent = textoOriginal;
+        }, 1200);
+      }).catch(() => {
+        estado.textContent = 'No se pudo copiar al portapapeles.';
+        estado.classList.add('error');
       });
     }
 
-    document.getElementById('btn-calcular').addEventListener('click', calcular);
-    document.getElementById('btn-limpiar').addEventListener('click', limpiar);
+    function guardarCalculo() {
+      if (!ultimoResultado) {
+        estado.textContent = 'Primero ingresa un monto valido.';
+        estado.classList.add('error');
+        return;
+      }
+
+      const ahora = new Date().toLocaleTimeString('es-CL', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      calculos = [{ ...ultimoResultado, hora: ahora }, ...calculos].slice(0, maxHistorial);
+      renderHistorial();
+      estado.textContent = 'Calculo guardado en el historial.';
+      estado.classList.remove('error');
+    }
+
+    function renderHistorial() {
+      if (calculos.length === 0) {
+        historial.innerHTML = '<div class="history-empty">Los calculos guardados apareceran aqui.</div>';
+        return;
+      }
+
+      historial.innerHTML = calculos.map(item => `
+        <article class="history-item">
+          <header>
+            <span>${item.tipo === 'neto' ? 'Desde neto' : 'Desde total'}</span>
+            <span>${item.hora}</span>
+          </header>
+          <p>Neto ${formato(item.neto)} · IVA ${formato(item.iva)} · Total ${formato(item.total)}</p>
+        </article>
+      `).join('');
+    }
+
+    function borrarHistorial() {
+      calculos = [];
+      renderHistorial();
+    }
+
+    function cambiarTema() {
+      const oscuro = app.dataset.theme === 'dark';
+      app.dataset.theme = oscuro ? 'light' : 'dark';
+      btnTema.textContent = oscuro ? '☾' : '☀';
+    }
+
+    monto.addEventListener('input', calcular);
+    tasa.addEventListener('input', calcular);
+    tipoRadios.forEach(radio => radio.addEventListener('change', calcular));
+    document.getElementById('btn-guardar').addEventListener('click', guardarCalculo);
     document.getElementById('btn-copiar').addEventListener('click', copiar);
-    document.getElementById('btn-imprimir').addEventListener('click', ()=> window.print());
+    document.getElementById('btn-limpiar').addEventListener('click', limpiar);
+    document.getElementById('btn-imprimir').addEventListener('click', () => window.print());
+    document.getElementById('btn-borrar-historial').addEventListener('click', borrarHistorial);
+    btnTema.addEventListener('click', cambiarTema);
 
-    document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener('change', calcular));
-    tasa.addEventListener('change', calcular);
-
-    // Calcular al presionar Enter
-    monto.addEventListener('keydown', e=>{ if(e.key==='Enter') calcular(); });
-
-    // Formateo en vivo mientras escribe (opcional suave)
-    monto.addEventListener('blur', ()=>{
-      const n = parseMonto(monto.value);
-      if(isFinite(n) && n>0) monto.value = new Intl.NumberFormat('es-CL').format(Math.round(n));
+    monto.addEventListener('blur', () => {
+      const valor = parseMonto(monto.value);
+      if (Number.isFinite(valor) && valor > 0) {
+        monto.value = new Intl.NumberFormat('es-CL').format(Math.round(valor));
+      }
     });
+
+    calcular();
   </script>
 </body>
 </html>
